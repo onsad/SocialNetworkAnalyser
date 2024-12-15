@@ -7,12 +7,11 @@ namespace SocialNetworkAnalyser.Entitites
         [Key]
         public int Id { get; set; }
 
-        public required SocialNetworkAnalysis SocialNetworkAnalysis { get; set; }
+        public SocialNetworkAnalysis? SocialNetworkAnalysis { get; set; }
 
         [Required]
         public int SocialNetworkUserId { get; set; }
 
-        [Required]
-        public int SocialNetworkConnectedUserId { get; set; }
+        public List<AnalyzedUserToAnalyzedUser>? SocialNetworkConnectedUsersId { get; set; }
     }
 }

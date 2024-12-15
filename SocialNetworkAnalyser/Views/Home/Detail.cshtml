@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Detail of Social network analysis";
+}
+<h2>@ViewData["Title"]</h2>
+
+@model SocialNetworkAnalyser.Entitites.SocialNetworkAnalysis
+<div>
+    <table>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.NameOfAnalysis): </th>
+            <td>@Html.DisplayFor(model => model.NameOfAnalysis)</td>
+        </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.CountOfUsers): </th>
+            <td>@Html.DisplayFor(model => model.CountOfUsers)</td>
+        </tr>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.AverageCountOfConnectedUsers): </th>
+            <td>@Html.DisplayFor(model => model.AverageCountOfConnectedUsers)</td>
+        </tr>
+    </table>
+</div>
+<p>
+    @Html.ActionLink("Back to List", "Index")
+</p>

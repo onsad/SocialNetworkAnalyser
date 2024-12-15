@@ -3,35 +3,11 @@
 }
 @model IEnumerable<SocialNetworkAnalyser.Entitites.SocialNetworkAnalysis>
 
-<h1 class="display-4">Social network analyser</h1>
-
-<div>
-    <h2>Import file</h2>
-
-    <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="FileUpload">
-        <div class="form-group">
-            <div class="col-md-10">
-                <label>Name of analysis: </label><input type="text" name="NameOfAnalysis" id="NameOfAnalysis" />
-                <p>Choose file with data for analysis:</p>
-                <input type="file" name="file" />
-            </div>
-        </div>
-        <div class="form-group">
-            <input type="submit" value="Upload file" />
-        </div>
-        <div class="form-group">
-            <span>@TempData["msg"]</span>
-        </div>
-    </form>
-</div>
+<h3 class="display-4">Social network analyser</h3>
 
 <div class="text-center">
-    <h3>List of imported data</h3>
     <table>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
             <th>
                 @Html.DisplayNameFor(model => model.NameOfAnalysis)
             </th>
@@ -42,13 +18,10 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.NameOfAnalysis)
                 </td>
                 <td>
-                    @Html.ActionLink("Details", "Details", new { id = item.Id })
+                    @Html.ActionLink("Detail", "Detail", new { id = item.Id })
                 </td>
             </tr>
         }

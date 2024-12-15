@@ -1,24 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
+using SocialNetworkAnalyser.Entitites;
 using SocialNetworkAnalyser.Models;
 using SocialNetworkAnalyser.Services;
 using System.Diagnostics;
 
 namespace SocialNetworkAnalyser.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(ILogger<HomeController> logger, IAnalysisService analysisService) : Controller
     {
-        private readonly ILogger<HomeController> logger;
-        private readonly IAnalysisService analysisService;
-
-        public HomeController(ILogger<HomeController> logger, IAnalysisService analysisService)
-        {
-            this.logger = logger;
-            this.analysisService = analysisService;
-        }
+        private readonly ILogger<HomeController> logger = logger;
+        private readonly IAnalysisService analysisService = analysisService;
 
         public IActionResult Index()
         {
-            return View(this.analysisService.GetSocialNetworkAnalysis());
+            return View(this.analysisService.GetAllSocialNetworkAnalysis());
         }
 
         public IActionResult Privacy()
@@ -26,43 +21,95 @@ namespace SocialNetworkAnalyser.Controllers
             return View();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> FileUpload(IFormFile file, string NameOfAnalysis)
+        public IActionResult FileUpload()
         {
-            await UploadFile(file);
-            TempData["msg"] = "File Uploaded successfully.";
             return View();
         }
-        // Upload file on server
-        public async Task<bool> UploadFile(IFormFile file)
+
+        [HttpPost]
+        public async Task<ActionResult> FileUpload(FileUploadModel fileUploadModel)
         {
-            string path = "";
-            bool iscopied = false;
+            if (string.IsNullOrEmpty(fileUploadModel.NameOfAnalysis))
+            {
+                ModelState.AddModelError(nameof(fileUploadModel.NameOfAnalysis), "Name of analysis must be exists.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            if (fileUploadModel.AnalysisFile == null)
+            {
+                ModelState.AddModelError(nameof(fileUploadModel.AnalysisFile), "Please add file with data.");
+            }
+            else
+            {
+                var res = await UploadFile(fileUploadModel.AnalysisFile);
+                
+                if (res != null)
+                {
+                    var savingResult = this.analysisService.SaveInputData(res, fileUploadModel.NameOfAnalysis, fileUploadModel.AnalysisFile.FileName);
+                    if(!savingResult)
+                    {
+                        ModelState.AddModelError(nameof(fileUploadModel.AnalysisFile), "File contains incorrect data.");
+
+                        return View();
+                    }
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+        
+        public async Task<List<string>> UploadFile(IFormFile file)
+        {
             try
             {
                 if (file.Length > 0)
                 {
-                    string filename = Guid.NewGuid() + Path.GetExtension(file.FileName);
-                    path = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "Upload"));
-                    using (var filestream = new FileStream(Path.Combine(path, filename), FileMode.Create))
+                    var result = new List<string>();
+                    using (var reader = new StreamReader(file.OpenReadStream()))
                     {
-                        await file.CopyToAsync(filestream);
+                        while (reader.Peek() >= 0)
+                        {
+                            var line = await reader.ReadLineAsync();
+
+                            if (!string.IsNullOrEmpty(line))
+                            {
+                                result.Add(line);
+                            }
+                        }
                     }
-                    iscopied = true;
-                }
-                else
-                {
-                    iscopied = false;
+                    return result;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                logger.LogError(ex.Message);
             }
-            return iscopied;
+
+            return new List<string>();
         }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public ActionResult Detail(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            SocialNetworkAnalysis? socialNetworkAnalysis = analysisService.GetSocialNetworkAnalysis(id.Value);
+
+            if (socialNetworkAnalysis == null)
+            {
+                return NotFound();
+            }
+
+            return View(socialNetworkAnalysis);
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

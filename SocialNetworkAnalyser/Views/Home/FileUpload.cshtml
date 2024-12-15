@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Upload file for analysis";
+}
+<h3>@ViewData["Title"]</h3>
+
+@model SocialNetworkAnalyser.Models.FileUploadModel
+
+<div>
+    <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="FileUpload">
+        <div class="form-group">
+            <div class="col-md-10">
+                <div class="editor-label">
+                    @Html.DisplayNameFor(model => model.NameOfAnalysis)
+                </div>
+                <div class="editor-field">
+                    @Html.EditorFor(model => model.NameOfAnalysis)
+                    @Html.ValidationMessageFor(model => model.NameOfAnalysis)
+                </div>
+                <div class="editor-field">
+                    <input type="file" accept=".txt" name="AnalysisFile" />
+                    @Html.ValidationMessageFor(model => model.AnalysisFile)
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" accept=".txt" value="Upload file" />
+        </div>
+        <div class="form-group">
+            <span>@TempData["msg"]</span>
+        </div>
+    </form>
+</div>

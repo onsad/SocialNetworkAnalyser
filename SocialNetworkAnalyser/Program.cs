@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SocialNetworkAnalyser.DAL;
+using SocialNetworkAnalyser.Repositories;
 using SocialNetworkAnalyser.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 var conString = builder.Configuration.GetConnectionString("DBConnection") ?? throw new InvalidOperationException("Connection string 'DBConnection not found.");
 
 builder.Services.AddDbContext<SocialNetworkAnalyserContext>(options => options.UseSqlServer(conString));
-builder.Services.AddScoped<IAnalysisService, AnalysisService>();
+builder.Services.AddTransient<ISocialNetworkAnalysisRepository, SocialNetworkAnalysisRepository>();
+builder.Services.AddTransient<IAnalysisService, AnalysisService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

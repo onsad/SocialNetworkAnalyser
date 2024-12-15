@@ -4,8 +4,10 @@ namespace SocialNetworkAnalyser.Services
 {
     public interface IAnalysisService
     {
-        public List<SocialNetworkAnalysis> GetSocialNetworkAnalysis();
+        public List<SocialNetworkAnalysis> GetAllSocialNetworkAnalysis();
 
-        public void SaveSocialNetworkAnalysis(SocialNetworkAnalysis analysis);
+        public SocialNetworkAnalysis? GetSocialNetworkAnalysis(int idOfAnalysis);
+
+        public bool SaveInputData(List<string> linesFromFile, string nameOfAnalsis, string fileName);
     }
 }
