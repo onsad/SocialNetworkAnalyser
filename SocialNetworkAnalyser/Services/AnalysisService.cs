@@ -34,8 +34,6 @@ namespace SocialNetworkAnalyser.Services
 
             var graphOfFriends = CreateGraphOfFriends(listOfUsersAndFriends);
 
-            
-
             socialNetworkAnalysisRepository.SaveSocialNetworkAnalysis(fileName, nameOfAnalysis, graphOfFriends);
 
             return true;
@@ -98,19 +96,14 @@ namespace SocialNetworkAnalyser.Services
             {
                 int t = q.Dequeue();
 
-                // loop for all adjacent nodes of node-t 
                 for (int i = 0; i < users[t]?.Count; ++i)
                 {
                     int v = users[t][i];
 
-                    // push node into queue only if 
-                    // it is not visited already 
                     if (distances[v] == -1)
                     {
                         q.Enqueue(v);
 
-                        // make distance of v, one more 
-                        // than distance of t 
                         distances[v] = distances[t] + 1;
                     }
                 }
@@ -118,7 +111,6 @@ namespace SocialNetworkAnalyser.Services
 
             int nodeIdx = 0;
 
-            // get farthest node distance and its index 
             for (int i = 0; i < users.Count; ++i)
             {
                 if (distances[i] > longestPath)

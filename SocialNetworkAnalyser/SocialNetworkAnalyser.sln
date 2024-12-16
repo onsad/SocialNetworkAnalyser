@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetworkAnalyser", "SocialNetworkAnalyser.csproj", "{FE579469-33A6-4146-B669-32FD712E2CC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialNetworkAnalyser", "SocialNetworkAnalyser.csproj", "{FE579469-33A6-4146-B669-32FD712E2CC1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialNetworkAnalyserTest", "..\SocialNetworkAnalyserTest\SocialNetworkAnalyserTest.csproj", "{845D4DF5-4665-452A-B7B4-BCB00117519F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{FE579469-33A6-4146-B669-32FD712E2CC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE579469-33A6-4146-B669-32FD712E2CC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE579469-33A6-4146-B669-32FD712E2CC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{845D4DF5-4665-452A-B7B4-BCB00117519F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{845D4DF5-4665-452A-B7B4-BCB00117519F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{845D4DF5-4665-452A-B7B4-BCB00117519F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{845D4DF5-4665-452A-B7B4-BCB00117519F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

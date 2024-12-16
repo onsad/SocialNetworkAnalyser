@@ -6,21 +6,29 @@ using System.Diagnostics;
 
 namespace SocialNetworkAnalyser.Controllers
 {
+    /// <summary>
+    /// Provides functionality for SN analyser.
+    /// </summary>
+    /// <param name="logger">Logging.</param>
+    /// <param name="analysisService">Analysis service.</param>
     public class HomeController(ILogger<HomeController> logger, IAnalysisService analysisService) : Controller
     {
         private readonly ILogger<HomeController> logger = logger;
         private readonly IAnalysisService analysisService = analysisService;
 
+        /// <summary>
+        /// Provides data for home page view.
+        /// </summary>
+        /// <returns>View for home page.</returns>
         public IActionResult Index()
         {
             return View(this.analysisService.GetAllSocialNetworkAnalysis());
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public IActionResult FileUpload()
         {
             return View();
@@ -62,7 +70,7 @@ namespace SocialNetworkAnalyser.Controllers
             return RedirectToAction("Index");
         }
         
-        public async Task<List<string>> UploadFile(IFormFile file)
+        private async Task<List<string>> UploadFile(IFormFile file)
         {
             try
             {
@@ -92,6 +100,11 @@ namespace SocialNetworkAnalyser.Controllers
             return new List<string>();
         }
 
+        /// <summary>
+        /// Provides data for detail view of analysis.
+        /// </summary>
+        /// <param name="id">Identifier of analysis.</param>
+        /// <returns>Detail view of analysis.</returns>
         public ActionResult Detail(int? id)
         {
             if (id == null)
