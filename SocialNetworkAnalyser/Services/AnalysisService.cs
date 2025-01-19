@@ -6,12 +6,12 @@ namespace SocialNetworkAnalyser.Services
 {
     public class AnalysisService(ISocialNetworkAnalysisRepository socialNetworkAnalysisRepository) : IAnalysisService
     {
-        public List<SocialNetworkAnalysis> GetAllSocialNetworkAnalysis()
+        public IEnumerable<SocialNetworkAnalysis> GetAllSocialNetworkAnalysis()
         {
             return socialNetworkAnalysisRepository.GetAll();
         }
 
-        public bool SaveInputData(List<string> linesFromFile, string nameOfAnalysis, string fileName)
+        public bool SaveSocialNetworkAnalysis(List<string> linesFromFile, string nameOfAnalysis, string fileName)
         {
             var listOfUsersAndFriends = new List<UserFromFile>();
 
@@ -42,8 +42,38 @@ namespace SocialNetworkAnalyser.Services
         public SocialNetworkAnalysis? GetSocialNetworkAnalysis(int idOfAnalysis)
         {
             var analysis =  socialNetworkAnalysisRepository.GetById(idOfAnalysis);
-            var pat = GetLargerstPathInTheNetwork(analysis);
+            //var pat = GetLargerstPathInTheNetwork(analysis);
             return analysis;
+        }
+
+        public async Task<List<string>> GetLinesFromInputFile(IFormFile file)
+        {
+            try
+            {
+                if (file.Length > 0)
+                {
+                    var result = new List<string>();
+                    using (var reader = new StreamReader(file.OpenReadStream()))
+                    {
+                        while (reader.Peek() >= 0)
+                        {
+                            var line = await reader.ReadLineAsync();
+
+                            if (!string.IsNullOrEmpty(line))
+                            {
+                                result.Add(line);
+                            }
+                        }
+                    }
+                    return result;
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return new List<string>();
         }
 
         private Dictionary<int, List<int>> CreateGraphOfFriends(List<UserFromFile> userFromFile)

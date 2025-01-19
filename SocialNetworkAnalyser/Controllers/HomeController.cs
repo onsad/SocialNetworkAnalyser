@@ -6,6 +6,7 @@ using System.Diagnostics;
 
 namespace SocialNetworkAnalyser.Controllers
 {
+    
     /// <summary>
     /// Provides functionality for SN analyser.
     /// </summary>
@@ -13,27 +14,31 @@ namespace SocialNetworkAnalyser.Controllers
     /// <param name="analysisService">Analysis service.</param>
     public class HomeController(ILogger<HomeController> logger, IAnalysisService analysisService) : Controller
     {
-        private readonly ILogger<HomeController> logger = logger;
-        private readonly IAnalysisService analysisService = analysisService;
-
         /// <summary>
         /// Provides data for home page view.
         /// </summary>
         /// <returns>View for home page.</returns>
+        [HttpGet]
         public IActionResult Index()
         {
-            return View(this.analysisService.GetAllSocialNetworkAnalysis());
+            return View(analysisService.GetAllSocialNetworkAnalysis());
         }
 
         /// <summary>
-        /// 
+        /// Provides data for analysis upload page.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>View for analysis upload page.</returns>
+        [HttpGet]
         public IActionResult FileUpload()
         {
             return View();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileUploadModel"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> FileUpload(FileUploadModel fileUploadModel)
         {
@@ -53,51 +58,36 @@ namespace SocialNetworkAnalyser.Controllers
             }
             else
             {
-                var res = await UploadFile(fileUploadModel.AnalysisFile);
-                
-                if (res != null)
+                List<string>? linesFromFile;
+                try
                 {
-                    var savingResult = this.analysisService.SaveInputData(res, fileUploadModel.NameOfAnalysis, fileUploadModel.AnalysisFile.FileName);
-                    if(!savingResult)
+                    linesFromFile = await analysisService.GetLinesFromInputFile(fileUploadModel.AnalysisFile);
+
+                    if (linesFromFile != null && linesFromFile.Count > 0)
+                    {
+                        var savingResult = analysisService.SaveSocialNetworkAnalysis(linesFromFile, fileUploadModel.NameOfAnalysis, fileUploadModel.AnalysisFile.FileName);
+                        if (!savingResult)
+                        {
+                            ModelState.AddModelError(nameof(fileUploadModel.AnalysisFile), "File contains incorrect data.");
+
+                            return View();
+                        }
+                    }
+                    else
                     {
                         ModelState.AddModelError(nameof(fileUploadModel.AnalysisFile), "File contains incorrect data.");
 
                         return View();
                     }
                 }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex.Message);
+                    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = ex.Message });
+                }   
             }
 
             return RedirectToAction("Index");
-        }
-        
-        private async Task<List<string>> UploadFile(IFormFile file)
-        {
-            try
-            {
-                if (file.Length > 0)
-                {
-                    var result = new List<string>();
-                    using (var reader = new StreamReader(file.OpenReadStream()))
-                    {
-                        while (reader.Peek() >= 0)
-                        {
-                            var line = await reader.ReadLineAsync();
-
-                            if (!string.IsNullOrEmpty(line))
-                            {
-                                result.Add(line);
-                            }
-                        }
-                    }
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex.Message);
-            }
-
-            return new List<string>();
         }
 
         /// <summary>
@@ -105,6 +95,7 @@ namespace SocialNetworkAnalyser.Controllers
         /// </summary>
         /// <param name="id">Identifier of analysis.</param>
         /// <returns>Detail view of analysis.</returns>
+        [HttpGet]
         public ActionResult Detail(int? id)
         {
             if (id == null)
@@ -125,7 +116,7 @@ namespace SocialNetworkAnalyser.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, ErrorMessage = "Unknown error." });
         }
     }
 }

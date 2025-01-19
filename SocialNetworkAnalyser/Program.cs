@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SocialNetworkAnalyser.DAL;
+using SocialNetworkAnalyser.ExceptionHandler;
 using SocialNetworkAnalyser.Repositories;
 using SocialNetworkAnalyser.Services;
 
@@ -13,6 +14,7 @@ builder.Services.AddTransient<IAnalysisService, AnalysisService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddExceptionHandler<ExceptionHandler>();
 
 var app = builder.Build();
 
@@ -22,13 +24,8 @@ using (var scope = app.Services.CreateScope())
     dataContext.Database.EnsureCreated();
 }
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
-}
+app.UseExceptionHandler("/Home/Error");
+app.UseHsts();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

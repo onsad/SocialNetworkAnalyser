@@ -6,17 +6,14 @@ namespace SocialNetworkAnalyser.Repositories
 {
     public class SocialNetworkAnalysisRepository(SocialNetworkAnalyserContext socialNetworkAnalyserContext, ILogger<SocialNetworkAnalysisRepository> logger) : ISocialNetworkAnalysisRepository
     {
-        public List<SocialNetworkAnalysis> GetAll()
+        public IEnumerable<SocialNetworkAnalysis> GetAll()
         {
-            return socialNetworkAnalyserContext.SocialNetworkAnalysis.ToList();
+            return socialNetworkAnalyserContext.SocialNetworkAnalysis.ToArray();
         }
 
         public SocialNetworkAnalysis? GetById(int id)
         {
-            return socialNetworkAnalyserContext.SocialNetworkAnalysis
-                .Include(sn => sn.AnalyzedUsers)
-                .ThenInclude(sn => sn.SocialNetworkConnectedUsersId)
-                .FirstOrDefault(s => s.Id == id);
+            return socialNetworkAnalyserContext.SocialNetworkAnalysis.Find(id);
         }
 
         public void SaveSocialNetworkAnalysis(string fileName, string nameOfAnalysis, Dictionary<int, List<int>> graphOfFriends)
@@ -56,6 +53,12 @@ namespace SocialNetworkAnalyser.Repositories
             catch (DbUpdateException exception)
             {
                 logger.LogError(exception.Message);
+                throw;
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception.Message);
+                throw;
             }
         }
     }
