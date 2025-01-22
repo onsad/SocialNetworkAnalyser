@@ -30,5 +30,19 @@ namespace SocialNetworkAnalyserTest
                 Assert.That(resultLines.Result[i], Is.EqualTo(expectedLines[i]));
             }
         }
+
+        [Test]
+        public void GetLinesFromInputFileEmptyFileTest()
+        {
+            Mock<ISocialNetworkAnalysisRepository> mock = new Mock<ISocialNetworkAnalysisRepository>();
+            var service = new AnalysisService(mock.Object);
+
+            byte[] filebytes = Encoding.UTF8.GetBytes(string.Empty);
+            IFormFile file = new FormFile(new MemoryStream(filebytes), 0, filebytes.Length, "Data", "data.txt");
+
+            var resultLines = service.GetLinesFromInputFile(file);
+
+            Assert.That(resultLines.Result.Count, Is.EqualTo(0));
+        }
     }
 }

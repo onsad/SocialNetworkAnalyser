@@ -40,7 +40,7 @@ namespace SocialNetworkAnalyser.Repositories
                         NameOfAnalysis = nameOfAnalysis,
                         AnalyzedUsers = usersToSave,
                         CountOfUsers = usersToSave.Count,
-                        AverageCountOfConnectedUsers = graphOfFriends.Sum(u => u.Value.Count) / graphOfFriends.Count
+                        AverageCountOfConnectedUsers = Math.Round((double)graphOfFriends.Sum(u => u.Value.Count) / (double)graphOfFriends.Count, 1)
                     };
 
                     socialNetworkAnalyserContext.SocialNetworkAnalysis.Add(analysis);

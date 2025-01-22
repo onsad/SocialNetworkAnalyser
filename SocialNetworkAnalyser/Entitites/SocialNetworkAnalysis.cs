@@ -19,7 +19,7 @@ namespace SocialNetworkAnalyser.Entitites
         public int CountOfUsers { get; set; }
 
         [Display(Name = "Average count of friends of user in the analysis")]
-        public int AverageCountOfConnectedUsers { get; set; }
+        public double AverageCountOfConnectedUsers { get; set; }
 
         [Required]
         public required ICollection<AnalyzedUser> AnalyzedUsers { get; set; }   
