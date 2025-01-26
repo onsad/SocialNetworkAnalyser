@@ -6,7 +6,7 @@ using SocialNetworkAnalyser.Repositories;
 
 namespace SocialNetworkAnalyserTest
 {
-    public class SocialNetworkAnalysisRepositoryTests
+    public class RepositoryTests
     {
         ISocialNetworkAnalysisRepository? socialNetworkAnalysisRepository;
         SocialNetworkAnalyserContext socialNetworkAnalyserContext;
@@ -24,7 +24,7 @@ namespace SocialNetworkAnalyserTest
         }
 
         [Test]
-        public void SaveSocialNetworkAnalysisSaveTest()
+        public void SaveTest()
         {
             var graphOfUsersDict = new Dictionary<int, List<int>>
             {
@@ -52,7 +52,39 @@ namespace SocialNetworkAnalyserTest
         }
 
         [Test]
-        public void SaveSocialNetworkAnalysisGetAllTest()
+        public void GetByIdTest()
+        {
+            var graphOfUsersDict = new Dictionary<int, List<int>>
+            {
+                { 1, new List<int> { 2, 3 } },
+                { 2, new List<int> { 3 } },
+                { 3, new List<int> { 4 } }
+            };
+            socialNetworkAnalysisRepository?.SaveSocialNetworkAnalysis("fileName", "TestAnalysis", graphOfUsersDict);
+
+            var socialNetworkAnalysis = socialNetworkAnalysisRepository?.GetById(1);
+
+            if (socialNetworkAnalysis != null)
+            {
+                Assert.Multiple(() =>
+                {
+                    Assert.That(socialNetworkAnalysis.FileName, Is.EqualTo("fileName"));
+                    Assert.That(socialNetworkAnalysis.NameOfAnalysis, Is.EqualTo("TestAnalysis"));
+                    Assert.That(socialNetworkAnalysis.CountOfUsers, Is.EqualTo(3));
+                    Assert.That(socialNetworkAnalysis.AverageCountOfConnectedUsers, Is.EqualTo(1.3));
+                });
+            }
+        }
+        [Test]
+        public void GetByIdNullTest()
+        {
+            var socialNetworkAnalysis = socialNetworkAnalysisRepository?.GetById(1);
+
+            Assert.That(socialNetworkAnalysis, Is.Null);
+        }
+
+        [Test]
+        public void GetAllTest()
         {
             var graphOfUsersDict1 = new Dictionary<int, List<int>>
             {

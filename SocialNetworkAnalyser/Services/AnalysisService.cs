@@ -41,9 +41,7 @@ namespace SocialNetworkAnalyser.Services
 
         public SocialNetworkAnalysis? GetSocialNetworkAnalysis(int idOfAnalysis)
         {
-            var analysis =  socialNetworkAnalysisRepository.GetById(idOfAnalysis);
-            //var pat = GetLargerstPathInTheNetwork(analysis);
-            return analysis;
+            return socialNetworkAnalysisRepository.GetById(idOfAnalysis);
         }
 
         public async Task<List<string>> GetLinesFromInputFile(IFormFile file)
@@ -103,6 +101,11 @@ namespace SocialNetworkAnalyser.Services
             return friendsDict;
         }
 
+        /// <summary>
+        /// Method for finding the largets connection between users in the network. Not completed. Not used.
+        /// </summary>
+        /// <param name="socialNetworkAnalysis"></param>
+        /// <returns></returns>
         public int GetLargerstPathInTheNetwork(SocialNetworkAnalysis socialNetworkAnalysis)
         {
             var longestPath = 0;
