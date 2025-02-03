@@ -35,7 +35,7 @@ namespace SocialNetworkAnalyser.Controllers
         }
 
         /// <summary>
-        /// Provides andpoint foà uploading file with data for analysis.
+        /// Provides endpoint for uploading file with data for analysis.
         /// </summary>
         /// <param name="fileUploadModel"></param>
         /// <returns></returns>
