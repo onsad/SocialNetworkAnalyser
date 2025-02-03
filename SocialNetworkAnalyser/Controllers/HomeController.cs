@@ -8,7 +8,7 @@ namespace SocialNetworkAnalyser.Controllers
 {
     
     /// <summary>
-    /// Provides functionality for SN analyser.
+    /// Provides functionality for Social Network analyser.
     /// </summary>
     /// <param name="logger">Logging.</param>
     /// <param name="analysisService">Analysis service.</param>
@@ -35,7 +35,7 @@ namespace SocialNetworkAnalyser.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Provides andpoint foà uploading file with data for analysis.
         /// </summary>
         /// <param name="fileUploadModel"></param>
         /// <returns></returns>

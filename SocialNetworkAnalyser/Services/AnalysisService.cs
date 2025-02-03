@@ -6,11 +6,13 @@ namespace SocialNetworkAnalyser.Services
 {
     public class AnalysisService(ISocialNetworkAnalysisRepository socialNetworkAnalysisRepository) : IAnalysisService
     {
+        /// <inheritdoc />
         public IEnumerable<SocialNetworkAnalysis> GetAllSocialNetworkAnalysis()
         {
             return socialNetworkAnalysisRepository.GetAll();
         }
 
+        /// <inheritdoc />
         public bool SaveSocialNetworkAnalysis(List<string> linesFromFile, string nameOfAnalysis, string fileName)
         {
             var listOfUsersAndFriends = new List<UserFromFile>();
@@ -39,11 +41,13 @@ namespace SocialNetworkAnalyser.Services
             return true;
         }
 
+        /// <inheritdoc />
         public SocialNetworkAnalysis? GetSocialNetworkAnalysis(int idOfAnalysis)
         {
             return socialNetworkAnalysisRepository.GetById(idOfAnalysis);
         }
 
+        /// <inheritdoc />
         public async Task<List<string>> GetLinesFromInputFile(IFormFile file)
         {
             try

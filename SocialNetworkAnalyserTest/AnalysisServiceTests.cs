@@ -57,115 +57,136 @@ namespace SocialNetworkAnalyserTest
 
             var resultLines = service.GetLinesFromInputFile(file);
 
-            Assert.That(resultLines.Result.Count, Is.EqualTo(0));
+            Assert.That(resultLines.Result, Is.Empty);
         }
 
         [Test]
         public void SaveAnalysisTest()
         {
+            if (socialNetworkAnalysisRepository != null)
+            {
+                var service = new AnalysisService(socialNetworkAnalysisRepository);
 
-            var service = new AnalysisService(socialNetworkAnalysisRepository);
+                byte[] filebytes = Encoding.UTF8.GetBytes($"0 1{Environment.NewLine}1 2");
+                IFormFile file = new FormFile(new MemoryStream(filebytes), 0, filebytes.Length, "Data", "data.txt");
 
-            byte[] filebytes = Encoding.UTF8.GetBytes($"0 1{Environment.NewLine}1 2");
-            IFormFile file = new FormFile(new MemoryStream(filebytes), 0, filebytes.Length, "Data", "data.txt");
+                var linesFromInputFile = service.GetLinesFromInputFile(file);
+                var result = service.SaveSocialNetworkAnalysis(linesFromInputFile.Result, "TestAnalysis", "fileName");
 
-            var linesFromInputFile = service.GetLinesFromInputFile(file);
-            var result = service.SaveSocialNetworkAnalysis(linesFromInputFile.Result, "TestAnalysis", "fileName");
-
-            var analysis = socialNetworkAnalysisRepository.GetAll().First();
-
-            Assert.That(analysis.NameOfAnalysis, Is.EqualTo("TestAnalysis"));
-            Assert.That(analysis.FileName, Is.EqualTo("fileName"));
-            Assert.That(analysis.AverageCountOfConnectedUsers, Is.EqualTo(1.3));
-            Assert.That(analysis.CountOfUsers, Is.EqualTo(3));
+                var analysis = socialNetworkAnalysisRepository.GetAll().First();
+                Assert.Multiple(() =>
+                {
+                    Assert.That(analysis.NameOfAnalysis, Is.EqualTo("TestAnalysis"));
+                    Assert.That(analysis.FileName, Is.EqualTo("fileName"));
+                    Assert.That(analysis.AverageCountOfConnectedUsers, Is.EqualTo(1.3));
+                    Assert.That(analysis.CountOfUsers, Is.EqualTo(3));
+                });
+            }
         }
 
         [Test]
         public void GetByIdAnalysisTest()
         {
-            var service = new AnalysisService(socialNetworkAnalysisRepository);
-
-            byte[] filebytes = Encoding.UTF8.GetBytes($"0 1{Environment.NewLine}1 2");
-            IFormFile file = new FormFile(new MemoryStream(filebytes), 0, filebytes.Length, "Data", "data.txt");
-
-            var linesFromInputFile = service.GetLinesFromInputFile(file);
-            service.SaveSocialNetworkAnalysis(linesFromInputFile.Result, "TestAnalysis1", "fileName1");
-
-            var analysis = socialNetworkAnalysisRepository.GetById(1);
-
-            if (analysis != null)
+            if (socialNetworkAnalysisRepository != null)
             {
-                Assert.That(analysis.NameOfAnalysis, Is.EqualTo("TestAnalysis1"));
-                Assert.That(analysis.FileName, Is.EqualTo("fileName1"));
-                Assert.That(analysis.AverageCountOfConnectedUsers, Is.EqualTo(1.3));
-                Assert.That(analysis.CountOfUsers, Is.EqualTo(3));
+                var service = new AnalysisService(socialNetworkAnalysisRepository);
+
+                byte[] filebytes = Encoding.UTF8.GetBytes($"0 1{Environment.NewLine}1 2");
+                IFormFile file = new FormFile(new MemoryStream(filebytes), 0, filebytes.Length, "Data", "data.txt");
+
+                var linesFromInputFile = service.GetLinesFromInputFile(file);
+                service.SaveSocialNetworkAnalysis(linesFromInputFile.Result, "TestAnalysis1", "fileName1");
+
+                var analysis = socialNetworkAnalysisRepository.GetById(1);
+
+                if (analysis != null)
+                {
+                    Assert.Multiple(() =>
+                    {
+                        Assert.That(analysis.NameOfAnalysis, Is.EqualTo("TestAnalysis1"));
+                        Assert.That(analysis.FileName, Is.EqualTo("fileName1"));
+                        Assert.That(analysis.AverageCountOfConnectedUsers, Is.EqualTo(1.3));
+                        Assert.That(analysis.CountOfUsers, Is.EqualTo(3));
+                    });
+                }
             }
         }
 
         [Test]
         public void GetByIdAnalysisNullTest()
         {
-            var service = new AnalysisService(socialNetworkAnalysisRepository);
-
-            var analysis = socialNetworkAnalysisRepository.GetById(1);
-
-            Assert.That(analysis, Is.Null);
+            if (socialNetworkAnalysisRepository != null)
+            {
+                var analysis = socialNetworkAnalysisRepository.GetById(1);
+                Assert.That(analysis, Is.Null);
+            }
         }
 
         [Test]
         public void GetAllAnalysisTest()
         {
-            var service = new AnalysisService(socialNetworkAnalysisRepository);
+            if (socialNetworkAnalysisRepository != null)
+            {
+                var service = new AnalysisService(socialNetworkAnalysisRepository);
 
-            byte[] filebytes = Encoding.UTF8.GetBytes($"0 1{Environment.NewLine}1 2");
-            IFormFile file = new FormFile(new MemoryStream(filebytes), 0, filebytes.Length, "Data", "data.txt");
+                byte[] filebytes = Encoding.UTF8.GetBytes($"0 1{Environment.NewLine}1 2");
+                IFormFile file = new FormFile(new MemoryStream(filebytes), 0, filebytes.Length, "Data", "data.txt");
 
-            var linesFromInputFile = service.GetLinesFromInputFile(file);
-            service.SaveSocialNetworkAnalysis(linesFromInputFile.Result, "TestAnalysis1", "fileName1");
+                var linesFromInputFile = service.GetLinesFromInputFile(file);
+                service.SaveSocialNetworkAnalysis(linesFromInputFile.Result, "TestAnalysis1", "fileName1");
 
-            service.SaveSocialNetworkAnalysis(linesFromInputFile.Result, "TestAnalysis2", "fileName2");
+                service.SaveSocialNetworkAnalysis(linesFromInputFile.Result, "TestAnalysis2", "fileName2");
 
-            var analysis = socialNetworkAnalysisRepository.GetAll();
+                var analysis = socialNetworkAnalysisRepository.GetAll();
 
-            Assert.That(analysis.Count, Is.EqualTo(2));
+                Assert.That(analysis.Count, Is.EqualTo(2));
+                Assert.Multiple(() =>
+                {
+                    Assert.That(analysis.First().NameOfAnalysis, Is.EqualTo("TestAnalysis1"));
+                    Assert.That(analysis.First().FileName, Is.EqualTo("fileName1"));
+                    Assert.That(analysis.First().AverageCountOfConnectedUsers, Is.EqualTo(1.3));
+                    Assert.That(analysis.First().CountOfUsers, Is.EqualTo(3));
 
-            Assert.That(analysis.First().NameOfAnalysis, Is.EqualTo("TestAnalysis1"));
-            Assert.That(analysis.First().FileName, Is.EqualTo("fileName1"));
-            Assert.That(analysis.First().AverageCountOfConnectedUsers, Is.EqualTo(1.3));
-            Assert.That(analysis.First().CountOfUsers, Is.EqualTo(3));
-
-            Assert.That(analysis.Last().NameOfAnalysis, Is.EqualTo("TestAnalysis2"));
-            Assert.That(analysis.Last().FileName, Is.EqualTo("fileName2"));
-            Assert.That(analysis.Last().AverageCountOfConnectedUsers, Is.EqualTo(1.3));
-            Assert.That(analysis.Last().CountOfUsers, Is.EqualTo(3));
+                    Assert.That(analysis.Last().NameOfAnalysis, Is.EqualTo("TestAnalysis2"));
+                    Assert.That(analysis.Last().FileName, Is.EqualTo("fileName2"));
+                    Assert.That(analysis.Last().AverageCountOfConnectedUsers, Is.EqualTo(1.3));
+                    Assert.That(analysis.Last().CountOfUsers, Is.EqualTo(3));
+                });
+            }
         }
 
         [Test]
         public void SaveAnalysisLeftInpuNotNumberTest()
         {
-            var service = new AnalysisService(socialNetworkAnalysisRepository);
+            if (socialNetworkAnalysisRepository != null)
+            {
+                var service = new AnalysisService(socialNetworkAnalysisRepository);
 
-            byte[] filebytes = Encoding.UTF8.GetBytes($"a 1{Environment.NewLine}1 2");
-            IFormFile file = new FormFile(new MemoryStream(filebytes), 0, filebytes.Length, "Data", "data.txt");
+                byte[] filebytes = Encoding.UTF8.GetBytes($"a 1{Environment.NewLine}1 2");
+                IFormFile file = new FormFile(new MemoryStream(filebytes), 0, filebytes.Length, "Data", "data.txt");
 
-            var linesFromInputFile = service.GetLinesFromInputFile(file);
-            var result = service.SaveSocialNetworkAnalysis(linesFromInputFile.Result, "TestAnalysis", "fileName");
+                var linesFromInputFile = service.GetLinesFromInputFile(file);
+                var result = service.SaveSocialNetworkAnalysis(linesFromInputFile.Result, "TestAnalysis", "fileName");
 
-            Assert.That(result, Is.EqualTo(false));
+                Assert.That(result, Is.EqualTo(false));
+            }   
         }
 
         [Test]
         public void SaveAnalysisRightInpuNotNumberTest()
         {
-            var service = new AnalysisService(socialNetworkAnalysisRepository);
+            if (socialNetworkAnalysisRepository != null)
+            {
+                var service = new AnalysisService(socialNetworkAnalysisRepository);
 
-            byte[] filebytes = Encoding.UTF8.GetBytes($"0 a{Environment.NewLine}1 2");
-            IFormFile file = new FormFile(new MemoryStream(filebytes), 0, filebytes.Length, "Data", "data.txt");
+                byte[] filebytes = Encoding.UTF8.GetBytes($"0 a{Environment.NewLine}1 2");
+                IFormFile file = new FormFile(new MemoryStream(filebytes), 0, filebytes.Length, "Data", "data.txt");
 
-            var linesFromInputFile = service.GetLinesFromInputFile(file);
-            var result = service.SaveSocialNetworkAnalysis(linesFromInputFile.Result, "TestAnalysis", "fileName");
+                var linesFromInputFile = service.GetLinesFromInputFile(file);
+                var result = service.SaveSocialNetworkAnalysis(linesFromInputFile.Result, "TestAnalysis", "fileName");
 
-            Assert.That(result, Is.EqualTo(false));
+                Assert.That(result, Is.EqualTo(false));
+            }
         }
 
         [TearDown]

@@ -6,21 +6,24 @@ namespace SocialNetworkAnalyser.Repositories
 {
     public class SocialNetworkAnalysisRepository(SocialNetworkAnalyserContext socialNetworkAnalyserContext, ILogger<SocialNetworkAnalysisRepository> logger) : ISocialNetworkAnalysisRepository
     {
+        /// <inheritdoc />
         public IEnumerable<SocialNetworkAnalysis> GetAll()
         {
             return socialNetworkAnalyserContext.SocialNetworkAnalysis.ToArray();
         }
 
+        /// <inheritdoc />
         public SocialNetworkAnalysis? GetById(int id)
         {
             return socialNetworkAnalyserContext.SocialNetworkAnalysis.Find(id);
         }
 
+        /// <inheritdoc />
         public void SaveSocialNetworkAnalysis(string fileName, string nameOfAnalysis, Dictionary<int, List<int>> graphOfFriends)
         {
-            try
+            using (var transaction = socialNetworkAnalyserContext.Database.BeginTransaction())
             {
-                using (var transaction = socialNetworkAnalyserContext.Database.BeginTransaction())
+                try
                 {
                     var usersToSave = new List<AnalyzedUser>();
 
@@ -49,16 +52,20 @@ namespace SocialNetworkAnalyser.Repositories
                     socialNetworkAnalyserContext.SaveChanges();
                     transaction.Commit();
                 }
-            }
-            catch (DbUpdateException exception)
-            {
-                logger.LogError(exception.Message);
-                throw;
-            }
-            catch (Exception exception)
-            {
-                logger.LogError(exception.Message);
-                throw;
+                catch (DbUpdateException exception)
+                {
+                    transaction.Rollback();
+                    logger.LogError(exception.Message);
+
+                    throw;
+                }
+                catch (Exception exception)
+                {
+                    transaction.Rollback();
+                    logger.LogError(exception.Message);
+
+                    throw;
+                }
             }
         }
     }
