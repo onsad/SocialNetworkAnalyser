@@ -4,9 +4,7 @@ The application for analyzing social networks. It analyses dataset with users an
 Analyse file in TXT format:
 
 1 2
-
 2 3
-
 2 4
 
 where each line is a connection between two people. You can upload file on the "Upload" page.
