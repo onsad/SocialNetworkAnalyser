@@ -32,6 +32,19 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// For production should we use this CORS policy. And HTTPS connection.
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseCors(builder =>
+    {
+        builder.WithOrigins("https://www.mydomain.com")
+               .AllowAnyMethod()
+               .AllowAnyHeader();
+    });
+    app.UseHsts();
+}
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
