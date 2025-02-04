@@ -15,10 +15,10 @@ namespace SocialNetworkAnalyser.Entitites
         [Required]
         public required string FileName { get; set; }
 
-        [Display(Name = "Count of users in the analysis")]
+        [Display(Name = "Total count of users")]
         public int CountOfUsers { get; set; }
 
-        [Display(Name = "Average count of friends of user in the analysis")]
+        [Display(Name = "Average count of friends of user")]
         public double AverageCountOfConnectedUsers { get; set; }
 
         [Required]
